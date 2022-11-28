@@ -8,6 +8,7 @@ app.use(cors());
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   next();
+  console.log(res.header);
 });
 
 app.use(express.json({ limit: "10mb" }));
@@ -46,7 +47,7 @@ app.post("/validatePassword", (req, res) => {
 
 // create a new user
 app.post("/addUser", (req, res) => {
-  const { username, password } = req.body;
+  const { userID, username, password } = req.body;
 
   db.all(`select * from users where username = '${username}'`, (err, rows) => {
     if (err) {
@@ -55,7 +56,15 @@ app.post("/addUser", (req, res) => {
     if (rows.length > 0) {
       res.send({ success: false });
     } else {
-      res.send({ success: true });
+      db.all(
+        `insert into users (user_id, username, password) VALUES ('${userID}', '${username}', '${password}')`,
+        (err) => {
+          if (err) {
+            throw err;
+          }
+        }
+      );
+      res.send({ success: true, message: { message: "User created" } });
     }
   });
 });

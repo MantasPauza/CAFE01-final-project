@@ -18,14 +18,6 @@ function Login() {
 
   return (
     <>
-      <form className="registration-form">
-        <h1>Registration</h1>
-        <label>Username</label>
-        <input type="text" />
-        <label>Password</label>
-        <input type="password" />
-        <button>Register</button>
-      </form>
       <form onSubmit={validate} className="login-form">
         <h1>Login</h1>
         <input id="loginUsername" type="text" placeholder="Username.." />
