@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Form, Button } from "react-bootstrap";
 
 function Login() {
   const validate = (e) => {
@@ -18,12 +19,20 @@ function Login() {
 
   return (
     <>
-      <form onSubmit={validate} className="login-form">
-        <h1>Login</h1>
-        <input id="loginUsername" type="text" placeholder="Username.." />
-        <input id="loginPassword" type="password" placeholder="Password.." />
-        <button type="submit">Login</button>
-      </form>
+    <Form onSubmit={validate} className="login-form d-flex flex-column w-50 gap-2">
+        <h4>Login</h4>
+        <Form.Group controlId="formLoginUsername">
+            <Form.Label>Username</Form.Label>
+            <Form.Control type="text" placeholder="Enter username" />
+        </Form.Group>
+        <Form.Group controlId="formLoginPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" placeholder="Password" />
+        </Form.Group>
+        <button id="login_button" variant="primary" type="submit">
+            Log in
+        </button>
+    </Form>
     </>
   );
 }
