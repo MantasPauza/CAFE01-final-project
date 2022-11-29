@@ -1,19 +1,21 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
+import { UserContext } from "../UserContext";
 
 function Login() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [ userData, setUserData ] = useState({});
+  const { loggedIn, setLoggedIn } = useContext(UserContext);
+  const [ userData, setUserData ] = useState();
+
+
+
   const validate = (e) => {
     e.preventDefault();
     const data = {
       username: e.target[0].value,
       password: e.target[1].value,
     };
-
-    
     
     axios.post("http://localhost:3001/validatePassword", data).then((res) => {
       if (res.data.validation) {
