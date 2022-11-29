@@ -5,8 +5,8 @@ import Modal from "react-bootstrap/Modal";
 import { UserContext } from "../UserContext";
 
 function Login() {
-  const { loggedIn, setLoggedIn } = useContext(UserContext);
-  const [ userData, setUserData ] = useState();
+  const { setLoggedIn }  = useContext(UserContext);
+  const { setUserData } = useContext(UserContext);
 
 
 
@@ -20,6 +20,7 @@ function Login() {
     axios.post("http://localhost:3001/validatePassword", data).then((res) => {
       if (res.data.validation) {
         setLoggedIn(true);
+
         setUserData(res.data.username);
       } else {
         alert("Your password is incorrect");
