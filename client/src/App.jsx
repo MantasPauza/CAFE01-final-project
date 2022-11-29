@@ -1,49 +1,19 @@
-import './App.css';
-import { Login } from './components/Login';
-import { Register } from './components/Registration';
-import { Container } from 'react-bootstrap';
-import { useFadeIn } from './custom_hooks/useFadeIn';
-import { useRef, useState } from 'react';
-
-
+import "./App.css";
+import { Login } from "./routes/Login";
+import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import { HomePage } from "./routes/Home";
 
 function App() {
-
-  const [login, setLogin] = useState(true);
-
-  // create a log in function that will set the login state to true and use given id to show according user page
-  const logIn = (id) => {
-    setLogin(true);
-  }
-  const logOut = (id) => {
-    setLogin(false);
-  }
-  const ref = useRef();
-  useFadeIn(ref, logIn);
-  useFadeIn(ref, logOut);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userData, setUserData] = useState({});
 
   return (
-    <div className="App">
-      <Container>
-        <div ref={ref}>
-          {login ? <Login logIn={logIn} /> : <Register logOut={logOut} />}
-          <Register />
-        </div>
-      </Container>
-    </div>
+    <Routes className={"d-flex flex-column w-50 gap-2 align-items-center"}>
+      <Route path="/" element={<Login loggedIn={loggedIn} />} />
+      <Route path="/home" element={<HomePage />} user={userData} />
+    </Routes>
   );
-
-
-
-/*   const [showLogin, setShowLogin] = useState(false);
-  const ref = useRef();
-  useFadeIn(ref, 1000);
-  return (
-    <Container ref={ref} id='form_container' className={'d-flex flex-column w-50 gap-2 align-items-center'} >
-      <Login show={showLogin} />
-      <Register />
-    </Container>
-  ); */
 }
 
 export { App };
