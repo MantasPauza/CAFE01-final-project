@@ -1,21 +1,18 @@
-import './App.css';
-import { Login } from './components/Login';
-import { Register } from './components/Registration';
-import { Container } from 'react-bootstrap';
-import { useFadeIn } from './custom_hooks/useFadeIn';
-import { useRef, useState } from 'react';
-
-
+import "./App.css";
+import { Login } from "./routes/Login";
+import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import { HomePage } from "./routes/Home";
 
 function App() {
-  const [showLogin, setShowLogin] = useState(false);
-  const ref = useRef();
-  useFadeIn(ref, 1000);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userData, setUserData] = useState({});
+
   return (
-    <Container ref={ref} id='form_container' className={'d-flex flex-column w-50 gap-2 align-items-center'} >
-      <Login show={showLogin} />
-      <Register />
-    </Container>
+    <Routes className={"d-flex flex-column w-50 gap-2 align-items-center"}>
+      <Route path="/" element={<Login loggedIn={loggedIn} />} />
+      <Route path="/home" element={<HomePage />} user={userData} />
+    </Routes>
   );
 }
 

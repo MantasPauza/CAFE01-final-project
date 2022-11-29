@@ -37,7 +37,8 @@ app.post("/validatePassword", (req, res) => {
         throw err;
       }
       if (rows.length > 0) {
-        res.send({ validation: true });
+        res.send({ validation: true, 
+          username: rows[0].username});
       } else {
         res.send({ validation: false });
       }
