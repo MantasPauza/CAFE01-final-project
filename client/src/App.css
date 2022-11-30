@@ -40,3 +40,17 @@ html, body, #root {
 #login_button:hover {
   background-color: #3e8e41;
 }
+
+#home_container {
+  width: 40% !important;
+  background-color: rgba(255, 255, 255, 0.278);
+  padding: 5vw 2vw;
+  border-radius: 10px;
+}
+
+#add_user_form{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10px;
+  
+}

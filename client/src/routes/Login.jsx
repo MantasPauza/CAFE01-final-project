@@ -8,7 +8,7 @@ function Login() {
   const { setLoggedIn }  = useContext(UserContext);
   const { setUserData } = useContext(UserContext);
   const { setTableData } = useContext(UserContext);
-
+  const [validated , setValidated] = useState(false);
 
 
   const validate = (e) => {
@@ -17,16 +17,15 @@ function Login() {
       username: e.target[0].value,
       password: e.target[1].value,
     };
-
-    //get data from server and store it in tableData
     
 
-    
     axios.post("http://localhost:3001/validatePassword", data).then((res) => {
-      if (res.status === 200) {
+      if (res.data.validation) {
+        setValidated(true);
         setLoggedIn(true);
         setUserData(res.data.username);
       } else {
+        console.log(res.validation);
         alert("Your password is incorrect");
       }
     });

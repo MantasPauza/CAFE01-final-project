@@ -27,7 +27,40 @@ db.run(
 );
 
 // check if demo user admin has table if not, create one
-db.run(`CREATE TABLE IF NOT EXISTS admin (attendee_id INTEGER PRIMARY KEY, firstName TEXT NOT NULL, email TEXT NOT NULL, lastName TEXT NOT NULL, age INTEGER NOT NULL);`)
+db.run(
+  `CREATE TABLE IF NOT EXISTS admin (attendee_id INTEGER PRIMARY KEY, firstName TEXT NOT NULL, email TEXT NOT NULL, lastName TEXT NOT NULL, age INTEGER NOT NULL);`
+);
+
+app.post("/addUser", (req, res) => {
+  const { userID, username, password } = req.body;
+  console.log(username);
+  db.run(
+    `CREATE TABLE IF NOT EXISTS ${username} (user_id INTEGER PRIMARY KEY, firstName TEXT NOT NULL, email TEXT NOT NULL, lastName TEXT NOT NULL, age INTEGER NOT NULL);`
+  );
+  db.run(
+    `INSERT INTO ${username} (user_id ,firstName, lastName, email, age) VALUES ( 1 ,'Placeholder', 'Placeholder', 'Placeholder', 0)`
+  );
+  db.all(`select * from users where username = '${username}'`, (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    if (rows.length > 0) {
+      res.send({ success: false });
+    } else {
+      db.all(
+        `insert into users (user_id, username, password) VALUES ('${userID}', '${username}', '${password}')`,
+        (err) => {
+          if (err) {
+            throw err;
+          }
+        }
+      );
+      res.send({ success: true, message: { message: "User created" } });
+    }
+  });
+  
+  
+});
 
 // check if the user exists and return true if it does
 
@@ -41,8 +74,7 @@ app.post("/validatePassword", (req, res) => {
         throw err;
       }
       if (rows.length > 0) {
-        res.send({ validation: true, 
-          username: rows[0].username});
+        res.send({ validation: true, username: rows[0].username });
       } else {
         res.send({ validation: false });
       }
@@ -51,6 +83,24 @@ app.post("/validatePassword", (req, res) => {
 });
 
 // extract data from database using username and send it to the client
+
+// add new attendee to the database
+app.post("/addAttendee", (req, res) => {
+  const { username, id, firstName, lastName, email, age } = req.body;
+
+  db.run(
+    `INSERT INTO ${username} (user_id, firstName, lastName, email, age) VALUES ( ${id}, '${firstName}', '${lastName}', '${email}', '${age}')`,
+    (err) => {
+      if (err) {
+        throw err;
+      }
+      res.send({ message: "user added" });
+    }
+  );
+});
+
+// create a new user
+
 app.post("/getData", (req, res) => {
   const { username } = req.body;
   console.log(username);
@@ -75,34 +125,4 @@ app.post("/getData", (req, res) => {
     }
   });
 });
-
-
-
-// create a new user
-app.post("/addUser", (req, res) => {
-  const { userID, username, password } = req.body;
-
-  db.all(`select * from users where username = '${username}'`, (err, rows) => {
-    if (err) {
-      throw err;
-    }
-    if (rows.length > 0) {
-      res.send({ success: false });
-    } else {
-      db.all(
-        `insert into users (user_id, username, password) VALUES ('${userID}', '${username}', '${password}')`,
-        (err) => {
-          if (err) {
-            throw err;
-          }
-        }
-      );
-      res.send({ success: true, message: { message: "User created" } });
-    }
-  });
-  db.all(`CREATE TABLE IF NOT EXISTS ${username} (user_id INTEGER PRIMARY KEY, firstName TEXT NOT NULL, email TEXT NOT NULL, lastName TEXT NOT NULL, age INTEGER NOT NULL);`)
-  db.all(`INSERT INTO ${username} (user_id ,firstName, lastName, email, age) VALUES ( 1 ,'Placeholder', 'Placeholder', 'Placeholder', 0)`);
-});
-
-
 app.listen(3001, () => console.log("Listening on http://localhost:3001"));
