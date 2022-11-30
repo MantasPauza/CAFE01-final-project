@@ -26,7 +26,11 @@ db.run(
   "CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY, username TEXT NOT NULL, password TEXT NOT NULL);"
 );
 
+// check if demo user admin has table if not, create one
+db.run(`CREATE TABLE IF NOT EXISTS admin (attendee_id INTEGER PRIMARY KEY, firstName TEXT NOT NULL, email TEXT NOT NULL, lastName TEXT NOT NULL, age INTEGER NOT NULL);`)
+
 // check if the user exists and return true if it does
+
 app.post("/validatePassword", (req, res) => {
   const { username, password } = req.body;
 
@@ -45,6 +49,34 @@ app.post("/validatePassword", (req, res) => {
     }
   );
 });
+
+// extract data from database using username and send it to the client
+app.post("/getData", (req, res) => {
+  const { username } = req.body;
+  console.log(username);
+
+  db.all(`select * from ${username} `, (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    if (rows.length > 0) {
+      const attendees = rows.map((row) => {
+        return {
+          attendeeID: row.user_id,
+          firstName: row.firstName,
+          lastName: row.lastName,
+          email: row.email,
+          age: row.age,
+        };
+      });
+      res.send({ attendees: attendees });
+    } else {
+      res.send({ data: [] });
+    }
+  });
+});
+
+
 
 // create a new user
 app.post("/addUser", (req, res) => {
@@ -68,6 +100,9 @@ app.post("/addUser", (req, res) => {
       res.send({ success: true, message: { message: "User created" } });
     }
   });
+  db.all(`CREATE TABLE IF NOT EXISTS ${username} (user_id INTEGER PRIMARY KEY, firstName TEXT NOT NULL, email TEXT NOT NULL, lastName TEXT NOT NULL, age INTEGER NOT NULL);`)
+  db.all(`INSERT INTO ${username} (user_id ,firstName, lastName, email, age) VALUES ( 1 ,'Placeholder', 'Placeholder', 'Placeholder', 0)`);
 });
+
 
 app.listen(3001, () => console.log("Listening on http://localhost:3001"));

@@ -10,10 +10,11 @@ import { ErrorPage } from "./routes/Error-page";
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userData, setUserData] = useState([]);
+  const [tableData, setTableData] = useState({});
 
   return (
     <UserContext.Provider
-      value={{ setLoggedIn, userData, setUserData }}
+      value={{ setLoggedIn, userData, setUserData, tableData, setTableData}}
     >
       <Routes>
       <Route exact path="/" errorElement={<ErrorPage />}  element={loggedIn ? <HomePage/> : <Login />}/>

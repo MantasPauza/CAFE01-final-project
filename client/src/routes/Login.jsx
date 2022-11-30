@@ -7,6 +7,7 @@ import { UserContext } from "../UserContext";
 function Login() {
   const { setLoggedIn }  = useContext(UserContext);
   const { setUserData } = useContext(UserContext);
+  const { setTableData } = useContext(UserContext);
 
 
 
@@ -16,15 +17,33 @@ function Login() {
       username: e.target[0].value,
       password: e.target[1].value,
     };
+
+    //get data from server and store it in tableData
+    
+
     
     axios.post("http://localhost:3001/validatePassword", data).then((res) => {
-      if (res.data.validation) {
+      if (res.status === 200) {
         setLoggedIn(true);
-
         setUserData(res.data.username);
       } else {
         alert("Your password is incorrect");
       }
+    });
+
+    axios({
+      method: "POST",
+      url: "http://localhost:3001/getData",
+      data: data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
+      console.log(res.data);
+      setTableData(res.data);
+      setLoggedIn(true);
+    }).catch((err) => {
+      console.log(err);
     });
   };
 
