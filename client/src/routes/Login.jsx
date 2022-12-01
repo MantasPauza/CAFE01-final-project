@@ -1,14 +1,17 @@
 import axios from "axios";
-import React, { useState, useContext } from "react";
-import { Form, Button, Container } from "react-bootstrap";
+import React, { useState, useContext, useEffect } from "react";
+import { Form, Container, Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { UserContext } from "../UserContext";
+import { FlashyButton } from "../styledComponents/Buttons.styles";
+
 
 function Login() {
   const { loggedIn, setLoggedIn } = useContext(UserContext);
   const { userData, setUserData } = useContext(UserContext);
   const { tableData, setTableData } = useContext(UserContext);
   const { validated, setValidated } = useContext(UserContext);
+  
 
   const validate = (e) => {
     e.preventDefault();
@@ -58,11 +61,34 @@ function Login() {
     handleClose();
   };
 
+  const useDemo = () => {
+    const data = {
+      username: "admin",
+      password: "admin",
+    };
+    axios.post("http://localhost:3001/validatePassword", data).then((res) => {
+      if (res.data.validation) {
+        axios.post("http://localhost:3001/getData", data).then((res) => {
+          setTableData(res.data.rows);
+        });
+        setValidated(true);
+        setLoggedIn(true);
+        setUserData(res.data.username);
+      } else {
+        console.log(res.validation);
+        alert("Your password is incorrect");
+      }
+    });
+  };
+
+ 
+
   return (
     <Container
       id="login_container"
     >
       <h1 id={'welcome_text'} className="text-center">Welcome!</h1>
+      <Button id="demo_button" onClick={useDemo}>Demo user</Button>
       <Form
         onSubmit={validate}
         className="login-form d-flex flex-column w-50 gap-2"
@@ -77,14 +103,14 @@ function Login() {
           <Form.Label>Password</Form.Label>
           <Form.Control type="password" placeholder="Password" />
         </Form.Group>
-        <button id="login_button" variant="primary" type="submit">
+        <FlashyButton id="login_button" variant="primary" type="submit">
           Log in
-        </button>
+        </FlashyButton>
       </Form>
       <div className={"d-flex flex-column align-items-center"}>
-        <Button variant="primary" onClick={handleShow}>
+        <FlashyButton variant="primary" onClick={handleShow}>
           Register
-        </Button>
+        </FlashyButton>
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Modal heading</Modal.Title>

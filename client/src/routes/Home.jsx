@@ -4,6 +4,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { Table, Container, Button, Modal, Form } from "react-bootstrap";
 import { AddUserForm } from "../components/AddUserForm";
 import axios from "axios";
+import PacmanLoader from "react-spinners/PacmanLoader";
+import { EditButton, DeleteButton } from "../styledComponents/Buttons.styles"; 
 
 const HomePage = () => {
   const { loggedIn, setLoggedIn } = useContext(UserContext);
@@ -12,6 +14,7 @@ const HomePage = () => {
   const { userData, setUserData } = useContext(UserContext);
   const [editedData, setEditedData] = useState([]);
   const [selectedID, setSelectedID] = useState([]);
+  const [loading, setLoading] = useState(false);
   console.log(tableData);
   console.log(validated);
 
@@ -88,15 +91,29 @@ const HomePage = () => {
     });
   };
 
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 4000);
+  }, []);
+
   return (
+
+    <>
+    {loading ? (
+      <PacmanLoader size={30} color={'#ffffff'}/>
+        ) :(
     <Container id="home_container">
+       
+              
       <Button variant="primary" onClick={logout}>
         Logout
       </Button>
       <AddUserForm />
       <Table striped bordered hover responsive size="sm">
         <thead>
-          <tr id="table_first_row">
+          <tr key={'first_row'} id="table_first_row">
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
@@ -118,17 +135,17 @@ const HomePage = () => {
                   <td value={data.lastName}>{data.lastName}</td>
                   <td value={data.email}>{data.email}</td>
                   <td value={data.age}>{data.age}</td>
-                  <td className="d-flex gap-3">
-                    <Button className="w-50" onClick={getData}>
+                  <td id="table_button_container" className="d-flex gap-3">
+                    <EditButton id="edit_button" onClick={getData}>
                       Edit
-                    </Button>
-                    <Button
-                      className="w-50"
+                    </EditButton>
+                    <DeleteButton
+                    id="delete_button"
                       variant="danger"
                       onClick={deleteData}
                     >
                       Delete
-                    </Button>
+                    </DeleteButton>
                   </td>
                 </tr>
               </>
@@ -165,8 +182,12 @@ const HomePage = () => {
           </Form>
         </Modal.Body>
       </Modal>
+
     </Container>
+    )}
+    </>
   );
 };
+
 
 export { HomePage };

@@ -4,6 +4,7 @@ import { Form, Button } from "react-bootstrap";
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
 import { useEffect } from "react";
+import { FormSubmitButton } from "../styledComponents/Buttons.styles";
 
 function AddUserForm() {
   // eslint-disable-next-line no-unused-vars
@@ -33,7 +34,7 @@ function AddUserForm() {
       email: e.target[2].value,
       age: e.target[3].value,
     };
-    
+
     setTableData((prev) => {
       const newData = [...prev, data];
       resetForm();
@@ -55,7 +56,7 @@ function AddUserForm() {
 
   return (
     <Form onSubmit={handleSubmit} id="add_user_form">
-      <Form.Group className="mb-3" controlId="formBasicFirstName">
+      <Form.Group id="input_form" className="mb-3" controlId="formBasicFirstName">
         <Form.Label>First Name</Form.Label>
         <Form.Control required type="text" placeholder="Enter first name" />
       </Form.Group>
@@ -71,9 +72,9 @@ function AddUserForm() {
         <Form.Label>Age</Form.Label>
         <Form.Control required type="number" placeholder="Enter age" />
       </Form.Group>
-      <Button variant="primary" type="submit">
+      <FormSubmitButton variant="primary" type="submit">
         Submit
-      </Button>
+      </FormSubmitButton>
     </Form>
   );
 }
