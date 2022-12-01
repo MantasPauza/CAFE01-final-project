@@ -3,21 +3,37 @@ import { UserContext } from "../UserContext";
 import React, { useContext } from "react";
 import { Table, Container, Button } from "react-bootstrap";
 import { AddUserForm } from "../components/AddUserForm";
+import { useEffect } from "react";
 
 const HomePage = () => {
-  const { userData, setLoggedIn } = useContext(UserContext);
+  const { loggedIn, setLoggedIn } = useContext(UserContext);
   const { tableData, setTableData } = useContext(UserContext);
+  const { validated, setValidated } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
   console.log(tableData);
+  console.log(validated);
+
+  useEffect(() => {
+    console.log("useEffect");
+    console.log(typeof tableData);
+  }, [tableData]);
 
   const logout = () => {
     setLoggedIn(false);
+    setTableData([]);
+    setValidated(false);
+    setUserData([]);
+    console.log(tableData);
+    console.log(validated);
+    console.log(userData);
+    console.log(loggedIn);
   };
 
   return (
     <Container id="home_container">
-        <Button variant="primary" onClick={logout}>
-            Logout
-        </Button>
+      <Button variant="primary" onClick={logout}>
+        Logout
+      </Button>
       <AddUserForm />
       <Table striped bordered hover responsive size="sm">
         <thead>
@@ -27,21 +43,20 @@ const HomePage = () => {
             <th>Email</th>
             <th>Age</th>
           </tr>
-          {tableData.attendees.length > 0 ? tableData.attendees.map((item) => (
-            <tr key={item.attendeeID} style={{ color: "white" }}>
-              <td>{item.firstName}</td>
-              <td>{item.lastName}</td>
-              <td>{item.email}</td>
-              <td>{item.age}</td>
+          {tableData.length === 0 ? (
+            <tr>
+              <td colSpan="4">No Data</td>
             </tr>
-          )) :
-          <tr style={{ color: "white" }}>
-            <td>No Data</td>
-            <td>No Data</td>
-            <td>No Data</td>
-            <td>No Data</td>
-            </tr>
-            }
+          ) : (
+            tableData.map((data) => (
+              <tr style={{ color: "white" }} key={data.user_id}>
+                <td>{data.firstName}</td>
+                <td>{data.lastName}</td>
+                <td>{data.email}</td>
+                <td>{data.age}</td>
+              </tr>
+            ))
+          )}
         </thead>
       </Table>
     </Container>

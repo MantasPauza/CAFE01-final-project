@@ -5,23 +5,36 @@ import Modal from "react-bootstrap/Modal";
 import { UserContext } from "../UserContext";
 
 function Login() {
-  const { setLoggedIn }  = useContext(UserContext);
-  const { setUserData } = useContext(UserContext);
-  const { setTableData } = useContext(UserContext);
-  const [validated , setValidated] = useState(false);
+  const { loggedIn, setLoggedIn } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
+  const { tableData, setTableData } = useContext(UserContext);
+  const { validated, setValidated } = useContext(UserContext);
 
+  console.log(tableData);
+  console.log(validated);
+  console.log(userData);
+  console.log(loggedIn);
 
   const validate = (e) => {
     e.preventDefault();
+    const d = new Date();
+    let ms = d.valueOf();
     const data = {
+      user_id: ms,
       username: e.target[0].value,
       password: e.target[1].value,
     };
-    
 
     axios.post("http://localhost:3001/validatePassword", data).then((res) => {
       if (res.data.validation) {
+        axios.post("http://localhost:3001/getData", data).then((res) => {
+          console.log(res.data);
+          console.log(tableData);
+          setTableData(res.data.rows);
+          console.log(tableData);
+        });
         setValidated(true);
+        console.log(validated);
         setLoggedIn(true);
         setUserData(res.data.username);
       } else {
@@ -29,21 +42,7 @@ function Login() {
         alert("Your password is incorrect");
       }
     });
-
-    axios({
-      method: "POST",
-      url: "http://localhost:3001/getData",
-      data: data,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((res) => {
-      console.log(res.data);
-      setTableData(res.data);
-      setLoggedIn(true);
-    }).catch((err) => {
-      console.log(err);
-    });
+    console.log(validated);
   };
 
   const [show, setShow] = useState(false);
@@ -61,9 +60,9 @@ function Login() {
     };
     axios.post("http://localhost:3001/addUser", data).then((res) => {
       if (res.data.success) {
-        alert(res.data.message.message);
+        alert(res.data.message);
       } else if (!res.data.sucess) {
-        alert("Username already exists");
+        alert(res.data.message);
       }
     });
   };

@@ -8,7 +8,6 @@ app.use(cors());
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   next();
-  console.log(res.header);
 });
 
 app.use(express.json({ limit: "10mb" }));
@@ -31,98 +30,103 @@ db.run(
   `CREATE TABLE IF NOT EXISTS admin (attendee_id INTEGER PRIMARY KEY, firstName TEXT NOT NULL, email TEXT NOT NULL, lastName TEXT NOT NULL, age INTEGER NOT NULL);`
 );
 
+// check if username is already taken and return true or false
+// if false, create new user in database
 app.post("/addUser", (req, res) => {
-  const { userID, username, password } = req.body;
-  console.log(username);
-  db.run(
-    `CREATE TABLE IF NOT EXISTS ${username} (user_id INTEGER PRIMARY KEY, firstName TEXT NOT NULL, email TEXT NOT NULL, lastName TEXT NOT NULL, age INTEGER NOT NULL);`
-  );
-  db.run(
-    `INSERT INTO ${username} (user_id ,firstName, lastName, email, age) VALUES ( 1 ,'Placeholder', 'Placeholder', 'Placeholder', 0)`
-  );
-  db.all(`select * from users where username = '${username}'`, (err, rows) => {
-    if (err) {
-      throw err;
-    }
-    if (rows.length > 0) {
-      res.send({ success: false });
-    } else {
-      db.all(
-        `insert into users (user_id, username, password) VALUES ('${userID}', '${username}', '${password}')`,
-        (err) => {
-          if (err) {
-            throw err;
-          }
+  const { id, username, password } = req.body;
+    db.get(
+      `SELECT * FROM users WHERE username = ?`,
+      [username],
+      (err, row) => {
+        if (err) {
+          console.log(err);
         }
-      );
-      res.send({ success: true, message: { message: "User created" } });
+        if (row) {
+          res.send({message: "user already exists"});
+        } else {
+          db.run(
+            `INSERT INTO users (user_id, username, password) VALUES (?, ?, ?)`,
+            [id, username, password],
+            function (err) {
+              if (err) {
+                return console.log(err.message);
+              }
+              if(res.statusCode === 200) {
+                console.log("user added");
+              } else {
+                return res.send({ message: "user not added" });
+              }
+            }
+          );
+        }
+      }
+    );
+  db.run(
+    `CREATE TABLE IF NOT EXISTS ${username} (attendee_id INTEGER PRIMARY KEY, firstName TEXT NOT NULL, lastName TEXT NOT NULL, email TEXT NOT NULL, age INTEGER NOT NULL);`, (err) => {
+      if (err) {
+        console.log(err);
+      } 
+       if(res.statusCode === 200) {
+        return res.send({ success: true, message: "user added" });
+      } else {
+        return res.send({ success: false, message: "user not added" });
+      }
     }
-  });
-  
-  
-});
+  );
 
-// check if the user exists and return true if it does
+});
 
 app.post("/validatePassword", (req, res) => {
   const { username, password } = req.body;
-
+  console.log(username);
   db.all(
     `select * from users where username = '${username}' and password ='${password}'`,
     (err, rows) => {
       if (err) {
-        throw err;
+        console.log(err);
+        return;
       }
       if (rows.length > 0) {
-        res.send({ validation: true, username: rows[0].username });
+         res.send({ validation: true, username: rows[0].username });
+         return;
       } else {
         res.send({ validation: false });
+        return;
       }
     }
   );
 });
-
-// extract data from database using username and send it to the client
-
-// add new attendee to the database
-app.post("/addAttendee", (req, res) => {
-  const { username, id, firstName, lastName, email, age } = req.body;
-
-  db.run(
-    `INSERT INTO ${username} (user_id, firstName, lastName, email, age) VALUES ( ${id}, '${firstName}', '${lastName}', '${email}', '${age}')`,
-    (err) => {
-      if (err) {
-        throw err;
-      }
-      res.send({ message: "user added" });
-    }
-  );
-});
-
-// create a new user
 
 app.post("/getData", (req, res) => {
   const { username } = req.body;
   console.log(username);
 
-  db.all(`select * from ${username} `, (err, rows) => {
+  db.all(`
+  SELECT * FROM ${username}
+  `, (err, rows) => {
     if (err) {
-      throw err;
+      console.log(err);
+      return;
     }
-    if (rows.length > 0) {
-      const attendees = rows.map((row) => {
-        return {
-          attendeeID: row.user_id,
-          firstName: row.firstName,
-          lastName: row.lastName,
-          email: row.email,
-          age: row.age,
-        };
-      });
-      res.send({ attendees: attendees });
-    } else {
-      res.send({ data: [] });
-    }
+      res.send({ rows: rows });
+      return;
   });
+
 });
+
+app.post("/addAttendee", (req, res) => {
+  const { username, id, firstName, lastName, email, age } = req.body;
+  console.log(username);
+  db.run(
+    `INSERT INTO ${username} (attendee_id, firstName, lastName, email, age) VALUES ( ${id}, '${firstName}', '${lastName}', '${email}', '${age}')`,
+    (err) => {
+      if (err) {
+        throw err;
+      }
+      res.send({ message: "user added" });
+      return;
+    }
+  );
+});
+
 app.listen(3001, () => console.log("Listening on http://localhost:3001"));
