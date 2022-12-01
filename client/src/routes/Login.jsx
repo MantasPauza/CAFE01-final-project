@@ -72,10 +72,12 @@ function Login() {
       id="login_container"
       className={"d-flex flex-column w-50 gap-2 align-items-center"}
     >
+      <h1 id={'welcome_text'} className="text-center">Welcome!</h1>
       <Form
         onSubmit={validate}
         className="login-form d-flex flex-column w-50 gap-2"
       >
+        <p id="demo"></p>
         <h4>Login</h4>
         <Form.Group controlId="formLoginUsername">
           <Form.Label>Username</Form.Label>

@@ -29,6 +29,8 @@ const HomePage = () => {
     console.log(loggedIn);
   };
 
+
+
   return (
     <Container id="home_container">
       <Button variant="primary" onClick={logout}>
@@ -49,12 +51,14 @@ const HomePage = () => {
             </tr>
           ) : (
             tableData.map((data) => (
-              <tr style={{ color: "white" }} key={data.user_id}>
-                <td>{data.firstName}</td>
-                <td>{data.lastName}</td>
-                <td>{data.email}</td>
-                <td>{data.age}</td>
-              </tr>
+              <>
+                <tr style={{ color: "white" }} key={data.user_id}>
+                  <td>{data.firstName}</td>
+                  <td>{data.lastName}</td>
+                  <td>{data.email}</td>
+                  <td>{data.age}</td>
+                </tr>
+              </>
             ))
           )}
         </thead>
