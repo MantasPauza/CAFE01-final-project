@@ -45,7 +45,6 @@ function App() {
           <PacmanLoader size={30} color={'#ffffff'}/>
             ) : (
               <>
-              <h1>Found me!</h1>
               <Routes>
                 
         <Route

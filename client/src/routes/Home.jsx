@@ -10,15 +10,10 @@ const HomePage = () => {
   const { tableData, setTableData } = useContext(UserContext);
   const { validated, setValidated } = useContext(UserContext);
   const { userData, setUserData } = useContext(UserContext);
-  const [ editedData, setEditedData ] = useState([]);
-  const [ selectedID, setSelectedID ] = useState([]);
+  const [editedData, setEditedData] = useState([]);
+  const [selectedID, setSelectedID] = useState([]);
   console.log(tableData);
   console.log(validated);
-
-  useEffect(() => {
-    console.log("useEffect");
-    console.log(typeof tableData);
-  }, [tableData]);
 
   const logout = () => {
     setLoggedIn(false);
@@ -30,25 +25,13 @@ const HomePage = () => {
     console.log(userData);
     console.log(loggedIn);
   };
-
-
-
-  /* axios.post("http://localhost:3001/getData", data).then((res) => {
-    console.log(res.data);
-    console.log(tableData);
-    setTableData(res.data.rows);
-    console.log(tableData);
-  }); */
-
-
-// get data from table depending which row is clicked
   const getData = (e) => {
     const parent = e.target.parentNode;
     const grandParent = parent.parentNode;
     const rowID = tableData[grandParent.id].attendee_id;
     const data = {
       attendee_id: rowID,
-    }
+    };
     setSelectedID(data);
     handleShow();
   };
@@ -65,24 +48,22 @@ const HomePage = () => {
       lastName: e.target[1].value,
       email: e.target[2].value,
       age: e.target[3].value,
-  };
+    };
 
-  
-  axios.post("http://localhost:3001/updateData", data).then((res) => {
-    if(res.data.success){
-      console.log("data updated");
-      handleClose();
-      axios.post("http://localhost:3001/getData", data).then((res) => {
+    axios.post("http://localhost:3001/updateData", data).then((res) => {
+      if (res.data.success) {
+        console.log("data updated");
+        handleClose();
+        axios.post("http://localhost:3001/getData", data).then((res) => {
           console.log(res.data);
           console.log(tableData);
           setTableData(res.data.rows);
           console.log(tableData);
         });
-    } else {
-      alert("data not updated");
-    
-    }
-  });
+      } else {
+        alert("data not updated");
+      }
+    });
   };
 
   const deleteData = (e) => {
@@ -92,20 +73,19 @@ const HomePage = () => {
     const data = {
       username: userData,
       attendee_id: rowID,
-    }
+    };
     axios.post("http://localhost:3001/deleteData", data).then((res) => {
-      if(res.data.success){
+      if (res.data.success) {
         console.log("data deleted");
         handleClose();
         axios.post("http://localhost:3001/getData", data).then((res) => {
-            console.log(res.data);
-            console.log(tableData);
-            setTableData(res.data.rows);
-            console.log(tableData);
-          });
+          console.log(res.data);
+          console.log(tableData);
+          setTableData(res.data.rows);
+          console.log(tableData);
+        });
       }
-    }
-    );
+    });
   };
 
   return (
@@ -116,7 +96,7 @@ const HomePage = () => {
       <AddUserForm />
       <Table striped bordered hover responsive size="sm">
         <thead>
-          <tr style={{ color: "white" }}>
+          <tr id="table_first_row">
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
@@ -131,20 +111,25 @@ const HomePage = () => {
               <>
                 <tr
                   id={index}
-                  style={{ color: "white" }}
+                  className="table_row"
                   key={data.attendee_id}
                 >
-                  <td value={data.firstName}>
-                    {data.firstName}
-                  </td>
+                  <td value={data.firstName}>{data.firstName}</td>
                   <td value={data.lastName}>{data.lastName}</td>
                   <td value={data.email}>{data.email}</td>
                   <td value={data.age}>{data.age}</td>
                   <td className="d-flex gap-3">
-                    <Button className="w-50" onClick={getData}>Edit</Button>
-                    <Button className="w-50" variant="danger" onClick={deleteData}>Delete</Button>
+                    <Button className="w-50" onClick={getData}>
+                      Edit
+                    </Button>
+                    <Button
+                      className="w-50"
+                      variant="danger"
+                      onClick={deleteData}
+                    >
+                      Delete
+                    </Button>
                   </td>
-
                 </tr>
               </>
             ))
@@ -152,34 +137,34 @@ const HomePage = () => {
         </thead>
       </Table>
       <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form onSubmit={updateData} className="attendee_update_form">
-              <h5>Register</h5>
-              <Form.Group controlId="formUpdateFirstName">
-                <Form.Label>First name</Form.Label>
-                <Form.Control type="text" placeholder="Enter first name" />
-              </Form.Group>
-              <Form.Group controlId="formRegistrationLastName">
-                <Form.Label>Last name</Form.Label>
-                <Form.Control type="text" placeholder="Enter last name" />
-              </Form.Group>
-              <Form.Group controlId="formRegistrationEmail">
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="Email" placeholder="Enter email" />
-              </Form.Group>
-              <Form.Group controlId="formRegistrationAge">
-                <Form.Label>Age</Form.Label>
-                <Form.Control type="number" placeholder="Enter age" />
-              </Form.Group>
-              <Button variant="success" type="submit">
-                Submit
-              </Button>
-            </Form>
-          </Modal.Body>
-        </Modal>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={updateData} className="attendee_update_form">
+            <h5>Register</h5>
+            <Form.Group controlId="formUpdateFirstName">
+              <Form.Label>First name</Form.Label>
+              <Form.Control type="text" placeholder="Enter first name" />
+            </Form.Group>
+            <Form.Group controlId="formRegistrationLastName">
+              <Form.Label>Last name</Form.Label>
+              <Form.Control type="text" placeholder="Enter last name" />
+            </Form.Group>
+            <Form.Group controlId="formRegistrationEmail">
+              <Form.Label>Email</Form.Label>
+              <Form.Control type="Email" placeholder="Enter email" />
+            </Form.Group>
+            <Form.Group controlId="formRegistrationAge">
+              <Form.Label>Age</Form.Label>
+              <Form.Control type="number" placeholder="Enter age" />
+            </Form.Group>
+            <Button variant="success" type="submit">
+              Submit
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 };

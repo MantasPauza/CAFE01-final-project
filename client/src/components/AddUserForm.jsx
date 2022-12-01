@@ -33,10 +33,7 @@ function AddUserForm() {
       email: e.target[2].value,
       age: e.target[3].value,
     };
-
     
-    
-
     setTableData((prev) => {
       const newData = [...prev, data];
       resetForm();
@@ -50,7 +47,7 @@ function AddUserForm() {
   };
 
   //watch tableData and if it changes rerender the table with the new data
-  
+
   useEffect(() => {
     console.log("tableData changed");
   }, [tableData]);

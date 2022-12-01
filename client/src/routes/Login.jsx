@@ -10,11 +10,6 @@ function Login() {
   const { tableData, setTableData } = useContext(UserContext);
   const { validated, setValidated } = useContext(UserContext);
 
-  console.log(tableData);
-  console.log(validated);
-  console.log(userData);
-  console.log(loggedIn);
-
   const validate = (e) => {
     e.preventDefault();
     const d = new Date();
@@ -28,13 +23,9 @@ function Login() {
     axios.post("http://localhost:3001/validatePassword", data).then((res) => {
       if (res.data.validation) {
         axios.post("http://localhost:3001/getData", data).then((res) => {
-          console.log(res.data);
-          console.log(tableData);
           setTableData(res.data.rows);
-          console.log(tableData);
         });
         setValidated(true);
-        console.log(validated);
         setLoggedIn(true);
         setUserData(res.data.username);
       } else {
@@ -42,7 +33,6 @@ function Login() {
         alert("Your password is incorrect");
       }
     });
-    console.log(validated);
   };
 
   const [show, setShow] = useState(false);
@@ -71,7 +61,6 @@ function Login() {
   return (
     <Container
       id="login_container"
-      className={"d-flex flex-column w-50 gap-2 align-items-center"}
     >
       <h1 id={'welcome_text'} className="text-center">Welcome!</h1>
       <Form
