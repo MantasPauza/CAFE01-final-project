@@ -76,6 +76,45 @@ app.post("/addUser", (req, res) => {
 
 });
 
+app.post("/updateData", (req, res) => {
+  const { username, attendee_id, firstName, lastName, email, age } = req.body;
+  console.log(req.body);
+  db.run(
+    `UPDATE ${username} SET firstName = ?, lastName = ?, email = ?, age = ? WHERE attendee_id = ?`,
+    [firstName, lastName, email, age, attendee_id],
+    function (err, rows) {
+      if (err) {
+        return console.log(err.message);
+        }
+        if(res.statusCode === 200) {
+          return res.send({ success: true, message: "data updated" });
+        } else {
+          return res.send({ message: "data not updated" });
+        }
+      }
+  );
+});
+
+app.post("/deleteData", (req, res) => {
+  const { username, attendee_id } = req.body;
+  db.run(
+    `DELETE
+    FROM ${username}
+    WHERE attendee_id = ?`,
+    [attendee_id],
+    function (err, rows) {
+      if (err) {
+        return console.log(err.message);
+      }
+      if(res.statusCode === 200) {
+        return res.send({ success: true, message: "data deleted" });
+      } else {
+        return res.send({ message: "data not deleted" });
+      }
+    }
+  );
+});
+
 app.post("/validatePassword", (req, res) => {
   const { username, password } = req.body;
   console.log(username);

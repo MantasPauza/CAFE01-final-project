@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import axios from "axios";
 import { Form, Button } from "react-bootstrap";
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
+import { useEffect } from "react";
 
 function AddUserForm() {
   // eslint-disable-next-line no-unused-vars
@@ -32,19 +34,27 @@ function AddUserForm() {
       age: e.target[3].value,
     };
 
+    
+    
 
     setTableData((prev) => {
       const newData = [...prev, data];
       resetForm();
       return newData;
     });
-    console.log(tableData);
 
     axios.post("http://localhost:3001/addAttendee", data).then((res) => {
       console.log(res);
     });
 
   };
+
+  //watch tableData and if it changes rerender the table with the new data
+  
+  useEffect(() => {
+    console.log("tableData changed");
+  }, [tableData]);
+
 
   return (
     <Form onSubmit={handleSubmit} id="add_user_form">
