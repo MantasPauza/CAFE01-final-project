@@ -72,17 +72,18 @@ const HomePage = () => {
     if(res.data.success){
       console.log("data updated");
       handleClose();
-    }
-    axios.post("http://localhost:3001/getData", data).then((res) => {
+      axios.post("http://localhost:3001/getData", data).then((res) => {
           console.log(res.data);
           console.log(tableData);
           setTableData(res.data.rows);
           console.log(tableData);
         });
-  }
-  );
-};
-
+    } else {
+      alert("data not updated");
+    
+    }
+  });
+  };
 
   const deleteData = (e) => {
     const parent = e.target.parentNode;
@@ -96,14 +97,13 @@ const HomePage = () => {
       if(res.data.success){
         console.log("data deleted");
         handleClose();
-      }
-      axios.post("http://localhost:3001/getData", data).then((res) => {
-
+        axios.post("http://localhost:3001/getData", data).then((res) => {
             console.log(res.data);
             console.log(tableData);
             setTableData(res.data.rows);
             console.log(tableData);
           });
+      }
     }
     );
   };
