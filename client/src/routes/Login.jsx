@@ -3,7 +3,8 @@ import React, { useState, useContext, useEffect } from "react";
 import { Form, Container, Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { UserContext } from "../UserContext";
-import { FlashyButton } from "../styledComponents/Buttons.styles";
+import { LogInButton } from "../styledComponents/Buttons.styles";
+import { LoginContainer } from "../styledComponents/Containers.styles";
 
 
 function Login() {
@@ -84,11 +85,12 @@ function Login() {
  
 
   return (
-    <Container
+    <LoginContainer
       id="login_container"
     >
-      <h1 id={'welcome_text'} className="text-center">Welcome!</h1>
-      <Button id="demo_button" onClick={useDemo}>Demo user</Button>
+      <div className="login_form">
+      <h1 id={'welcome_text'} className="text-center" style={{color: '#D4A10B'}}>Welcome!</h1>
+      <LogInButton id="demo_button" onClick={useDemo}>Demo user</LogInButton>
       <Form
         onSubmit={validate}
         className="login-form d-flex flex-column w-50 gap-2"
@@ -103,14 +105,14 @@ function Login() {
           <Form.Label>Password</Form.Label>
           <Form.Control type="password" placeholder="Password" />
         </Form.Group>
-        <FlashyButton id="login_button" variant="primary" type="submit">
+        <LogInButton id="login_button" variant="primary" type="submit">
           Log in
-        </FlashyButton>
+        </LogInButton>
       </Form>
       <div className={"d-flex flex-column align-items-center"}>
-        <FlashyButton variant="primary" onClick={handleShow}>
+        <LogInButton variant="primary" onClick={handleShow}>
           Register
-        </FlashyButton>
+        </LogInButton>
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Modal heading</Modal.Title>
@@ -133,7 +135,8 @@ function Login() {
           </Modal.Body>
         </Modal>
       </div>
-    </Container>
+      </div>
+    </LoginContainer>
   );
 }
 

@@ -102,7 +102,7 @@ const HomePage = () => {
 
     <>
     {loading ? (
-      <PacmanLoader size={30} color={'#ffffff'}/>
+      <PacmanLoader size={30} color={'#D4A10B'}/>
         ) :(
     <Container id="home_container">
        

@@ -12,7 +12,7 @@ body,
 }
 
 #root {
-  background-image: url("./images/pexels-krivec-ales-547114.jpg");
+  background: linear-gradient(45deg, #1228A4, #3F45AA, #676bc2 );
   background-position: center center;
   background-size: cover;
   display: flex;
@@ -22,17 +22,6 @@ body,
 }
 
 @media (min-width: 768px) {
-  #login_container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 20px;
-    grid-template-rows: auto;
-    justify-items: center;
-    width: 40% !important;
-    background-color: rgba(255, 255, 255, 0.278);
-    padding: 5vw 2vw;
-    border-radius: 10px;
-  }
 
   #welcome_text {
     grid-row: 1/3;
@@ -65,6 +54,28 @@ body,
     );
     padding: 5vw 2vw;
     border-radius: 10px;
+  }
+
+  .login_form {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    inset: 2px;
+    background-color: #2f2db6;
+    z-index: 10;
+    color: #D4A10B;
+  }
+
+  .login_form input {
+    background-color: #2f2db6;
+    border: #D4A10B 1px solid;
+    
+  }
+
+  .login_form input::placeholder {
+    color: #D4A10B;
   }
 
   #add_user_form {
