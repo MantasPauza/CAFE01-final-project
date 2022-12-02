@@ -119,22 +119,26 @@ app.post("/validatePassword", (req, res) => {
   const { username, password } = req.body;
   console.log(username);
   db.all(
-    `select * from users where username = '${username}' and password ='${password}'`,
+    `select * from users where username = '${username}'`,
     (err, rows) => {
       if (err) {
         console.log(err);
         return;
       }
-      if (rows.length > 0) {
+      if (rows.length > 0 && rows[0].password === password) {
          res.send({ validation: true, username: rows[0].username });
          return;
+      } else if(rows.length > 0 && rows[0].password !== password) {
+        res.send({ validation: false, message: "incorrect password" });
+        return;
       } else {
-        res.send({ validation: false });
+        res.send({ validation: false, message: "user does not exist" });
         return;
       }
     }
   );
 });
+
 
 app.post("/getData", (req, res) => {
   const { username } = req.body;

@@ -33,8 +33,7 @@ function Login() {
         setLoggedIn(true);
         setUserData(res.data.username);
       } else {
-        console.log(res.validation);
-        alert("Your password is incorrect");
+        alert(res.data.message);
       }
     });
   };
