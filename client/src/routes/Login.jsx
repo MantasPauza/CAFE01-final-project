@@ -5,6 +5,13 @@ import Modal from "react-bootstrap/Modal";
 import { UserContext } from "../UserContext";
 import { LogInButton } from "../styledComponents/Buttons.styles";
 import { LoginContainer } from "../styledComponents/Containers.styles";
+import sha256 from 'crypto-js/sha256';
+import hmacSHA512 from 'crypto-js/hmac-sha512';
+import Base64 from 'crypto-js/enc-base64';
+
+let CryptoJS = require("crypto-js");
+
+
 
 
 function Login() {
@@ -13,15 +20,19 @@ function Login() {
   const { tableData, setTableData } = useContext(UserContext);
   const { validated, setValidated } = useContext(UserContext);
   
+ 
 
   const validate = (e) => {
+    let hash = CryptoJS.SHA1(e.target[1].value);
+    let hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
+    console.log(hashInBase64);
     e.preventDefault();
     const d = new Date();
     let ms = d.valueOf();
     const data = {
       user_id: ms,
       username: e.target[0].value,
-      password: e.target[1].value,
+      password: hashInBase64,
     };
 
     axios.post("http://localhost:3001/validatePassword", data).then((res) => {
@@ -44,13 +55,15 @@ function Login() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const register = (e) => {
+    const registerPassword = CryptoJS.SHA1(e.target[1].value);
+    const registerPasswordInBase64 = CryptoJS.enc.Base64.stringify(registerPassword);
     e.preventDefault();
     const d = new Date();
     let ms = d.valueOf();
     const data = {
       userID: ms,
       username: e.target[0].value,
-      password: e.target[1].value,
+      password: registerPasswordInBase64,
     };
     axios.post("http://localhost:3001/addUser", data).then((res) => {
       if (res.data.success) {
@@ -63,9 +76,11 @@ function Login() {
   };
 
   const useDemo = () => {
+    const encrypted = CryptoJS.SHA1("admin");
+    const hashInBase64 = CryptoJS.enc.Base64.stringify(encrypted);
     const data = {
       username: "admin",
-      password: "admin",
+      password: hashInBase64,
     };
     axios.post("http://localhost:3001/validatePassword", data).then((res) => {
       if (res.data.validation) {
@@ -99,11 +114,11 @@ function Login() {
         <h4>Login</h4>
         <Form.Group controlId="formLoginUsername">
           <Form.Label>Username</Form.Label>
-          <Form.Control type="text" placeholder="Enter username" />
+          <Form.Control required type="text" placeholder="Enter username" />
         </Form.Group>
         <Form.Group controlId="formLoginPassword">
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" />
+          <Form.Control required type="password" placeholder="Password" />
         </Form.Group>
         <LogInButton id="login_button" variant="primary" type="submit">
           Log in
