@@ -117,7 +117,7 @@ app.post("/deleteData", (req, res) => {
 
 app.post("/validatePassword", (req, res) => {
   const { username, password } = req.body;
-  console.log(username);
+  console.log(password);
   db.all(
     `select * from users where username = '${username}'`,
     (err, rows) => {
@@ -128,11 +128,19 @@ app.post("/validatePassword", (req, res) => {
       if (rows.length > 0 && rows[0].password === password) {
          res.send({ validation: true, username: rows[0].username });
          return;
-      } else if(rows.length > 0 && rows[0].password !== password) {
-        res.send({ validation: false, message: "incorrect password" });
+      } else if (username === ''){
+        res.send({ validation: false, message: "Username cannot be empty" });
+        return;
+      } 
+      else if (password === '') {
+        res.send({ validation: false, message: "Please enter your password." });
+        return;
+      }
+      else if(rows.length > 0 && rows[0].password !== password) {
+        res.send({ validation: false, message: "Your password is incorrect. :(" });
         return;
       } else {
-        res.send({ validation: false, message: "user does not exist" });
+        res.send({ validation: false, message: "This username is not in our database." });
         return;
       }
     }

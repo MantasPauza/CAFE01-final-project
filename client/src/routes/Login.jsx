@@ -33,6 +33,7 @@ function Login() {
         setLoggedIn(true);
         setUserData(res.data.username);
       } else {
+        setValidated(false);
         alert(res.data.message);
       }
     });

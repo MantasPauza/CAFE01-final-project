@@ -15,6 +15,7 @@ function App() {
   const [tableData, setTableData] = useState([]);
   const [validated, setValidated] = useState(false);
   const [newTableData, setNewTableData] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   return (
     <UserContext.Provider
