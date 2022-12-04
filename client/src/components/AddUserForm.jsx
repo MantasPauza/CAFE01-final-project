@@ -1,16 +1,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import axios from "axios";
-import { Form, Button } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
 import { useEffect } from "react";
-import { FormSubmitButton } from "../styledComponents/Buttons.styles";
-
+import { YellowButton } from "../styledComponents/Buttons.styles";
+import { AddUserFormContainer } from "../styledComponents/Containers.styles";
 function AddUserForm() {
   // eslint-disable-next-line no-unused-vars
   const { userData, setLoggedIn } = useContext(UserContext);
   const { tableData, setTableData } = useContext(UserContext);
-  console.log(tableData);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,8 +22,6 @@ function AddUserForm() {
     };
     const d = new Date();
     let id = d.valueOf();
-
-    console.log(tableData);
     const data = {
       key: id,
       username: userData,
@@ -44,38 +41,67 @@ function AddUserForm() {
     axios.post("http://localhost:3001/addAttendee", data).then((res) => {
       console.log(res);
     });
-
   };
 
-  //watch tableData and if it changes rerender the table with the new data
-
   useEffect(() => {
-    console.log("tableData changed");
+    console.log("BOOM effect");
   }, [tableData]);
 
-
   return (
-    <Form onSubmit={handleSubmit} id="add_user_form">
-      <Form.Group id="input_form" className="mb-3" controlId="formBasicFirstName">
+    <AddUserFormContainer onSubmit={handleSubmit} id="add_user_form">
+      <Form.Group
+        key={`first_name_input`}
+        id="input_form"
+        className="mb-3"
+        controlId="formBasicFirstName"
+      >
         <Form.Label>First Name</Form.Label>
-        <Form.Control required type="text" placeholder="Enter first name" />
+        <Form.Control
+          autoComplete="off"
+          required
+          type="text"
+          placeholder="Enter first name"
+        />
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicLastName">
+      <Form.Group
+        key={`last_name_input`}
+        className="mb-3"
+        controlId="formBasicLastName"
+      >
         <Form.Label>Last Name</Form.Label>
-        <Form.Control required type="text" placeholder="Enter last name" />
+        <Form.Control
+          autoComplete="off"
+          required
+          type="text"
+          placeholder="Enter last name"
+        />
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
+      <Form.Group
+        key={`email_input`}
+        className="mb-3"
+        controlId="formBasicEmail"
+      >
         <Form.Label>Email address</Form.Label>
-        <Form.Control required type="email" placeholder="Enter email" />
+        <Form.Control
+          autoComplete="off"
+          required
+          type="email"
+          placeholder="Enter email"
+        />
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicAge">
+      <Form.Group key={`age_input`} className="mb-3" controlId="formBasicAge">
         <Form.Label>Age</Form.Label>
-        <Form.Control required type="number" placeholder="Enter age" />
+        <Form.Control
+          autoComplete="off"
+          required
+          type="number"
+          placeholder="Enter age"
+        />
       </Form.Group>
-      <FormSubmitButton variant="primary" type="submit">
+      <YellowButton variant="primary" type="submit">
         Submit
-      </FormSubmitButton>
-    </Form>
+      </YellowButton>
+    </AddUserFormContainer>
   );
 }
 

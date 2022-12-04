@@ -24,7 +24,9 @@ let db = new sqlite3.Database("db.sqlite3", (err) => {
 db.run(
   "CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY, username TEXT NOT NULL, password TEXT NOT NULL);"
 );
-
+db.run(
+'DROP TABLE IF EXISTS Mantas;'
+);
 // check if demo user admin has table if not, create one
 db.run(
   `CREATE TABLE IF NOT EXISTS admin (attendee_id INTEGER PRIMARY KEY, firstName TEXT NOT NULL, email TEXT NOT NULL, lastName TEXT NOT NULL, age INTEGER NOT NULL);`

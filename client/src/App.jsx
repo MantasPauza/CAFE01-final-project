@@ -5,7 +5,6 @@ import { Route, Routes } from "react-router-dom";
 import { HomePage } from "./routes/Home";
 import { UserContext } from "./UserContext";
 import { ErrorPage } from "./routes/Error-page";
-import { useEffect } from "react";
 
 import { Container } from "react-bootstrap";
 
@@ -30,7 +29,7 @@ function App() {
         setNewTableData,
       }}
     >
-      <Container className="d-flex justify-content-center">
+      <Container className="d-flex justify-content-center m-0">
         <Routes>
           <Route
             exact
