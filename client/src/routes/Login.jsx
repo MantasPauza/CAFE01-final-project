@@ -18,14 +18,18 @@ function Login() {
   const { tableData, setTableData } = useContext(UserContext);
   const { validated, setValidated } = useContext(UserContext);
   const [inputType, setInputType] = useState("password");
-
+  // checks if the input type is password or text and changes it accordingly to enable or disable the password visibility
   const handleClick = () =>
     inputType === "password" ? setInputType("text") : setInputType("password");
 
+  // function to handle the login form submission
+
   const validate = (e) => {
+    // encrypts the password using the sha256 algorithm
     let hash = CryptoJS.SHA1(e.target[1].value);
     let hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
     e.preventDefault();
+    //creates new, unique id for the user
     const d = new Date();
     let ms = d.valueOf();
     const data = {
@@ -33,31 +37,38 @@ function Login() {
       username: e.target[0].value,
       password: hashInBase64,
     };
-
+    // sends the data to the server, which checks if the user exists in the database and if the password is correct and returns the according user data
     axios.post("http://localhost:3001/validatePassword", data).then((res) => {
       if (res.data.validation) {
         axios.post("http://localhost:3001/getData", data).then((res) => {
           setTableData(res.data.rows);
         });
+        // if the user exists, the user data is stored in the context and the user is logged in, which redirects the user to his home page
+        // the user data is stored in the context to be used in other components
         setValidated(true);
         setLoggedIn(true);
         setUserData(res.data.username);
       } else {
+        // if the user does not exist, the user is not logged in and the user data is not stored in the context
         setValidated(false);
         alert(res.data.message);
       }
     });
   };
 
+  //modal open/close functions
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  // function to handle the registration form submission
   const register = (e) => {
+    // encrypts the password using the sha256 algorithm
     const registerPassword = CryptoJS.SHA1(e.target[1].value);
     const registerPasswordInBase64 =
       CryptoJS.enc.Base64.stringify(registerPassword);
     e.preventDefault();
+    //creates new, unique id for the user
     const d = new Date();
     let ms = d.valueOf();
     const data = {
@@ -65,6 +76,7 @@ function Login() {
       username: e.target[0].value,
       password: registerPasswordInBase64,
     };
+    //sends new user data to the server, which checks if the user already exists in the database and if not, adds the user to the database
     axios.post("http://localhost:3001/addUser", data).then((res) => {
       if (res.data.success) {
         alert(res.data.message);
@@ -75,6 +87,7 @@ function Login() {
     handleClose();
   };
 
+  // function to handle demo user login. The demo user is already stored in the database, everything else is the same as the login function
   const useDemo = () => {
     const encrypted = CryptoJS.SHA1("admin");
     const hashInBase64 = CryptoJS.enc.Base64.stringify(encrypted);

@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { Form } from "react-bootstrap";
 import { useContext } from "react";
@@ -7,13 +8,12 @@ import { useEffect } from "react";
 import { YellowButton } from "../styledComponents/Buttons.styles";
 import { AddUserFormContainer } from "../styledComponents/Containers.styles";
 function AddUserForm() {
-  // eslint-disable-next-line no-unused-vars
   const { userData, setLoggedIn } = useContext(UserContext);
   const { tableData, setTableData } = useContext(UserContext);
 
+  // function to handle the new attendee form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const resetForm = () => {
       e.target[0].value = "";
       e.target[1].value = "";
@@ -22,6 +22,7 @@ function AddUserForm() {
     };
     const d = new Date();
     let id = d.valueOf();
+    // storing data from the input fields in an object
     const data = {
       key: id,
       username: userData,
@@ -31,21 +32,23 @@ function AddUserForm() {
       email: e.target[2].value,
       age: e.target[3].value,
     };
-
+    // setting new tableData state to include the new attendee data. This is done to update the table in the home page
     setTableData((prev) => {
       const newData = [...prev, data];
       resetForm();
       return newData;
     });
-
+    // sending the new attendee data to the server to be stored in the database
     axios.post("http://localhost:3001/addAttendee", data).then((res) => {
       console.log(res);
     });
   };
-
+  // useEffect to check when the user data changes and if it does, it means the user has logged out and the user is redirected to the login page
   useEffect(() => {
-    console.log("BOOM effect");
-  }, [tableData]);
+    if (userData === "") {
+      setLoggedIn(false);
+    }
+  }, [userData, setLoggedIn]);
 
   return (
     <AddUserFormContainer onSubmit={handleSubmit} id="add_user_form">

@@ -23,12 +23,14 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [editingData, setEditingData] = useState({});
 
+  //sets login status to false, clears attendees table, and clears user data which redirects the user to the login page
   const logout = () => {
     setLoggedIn(false);
     setTableData([]);
     setValidated(false);
     setUserData([]);
   };
+  // gets data from row that is clicked on, and sets it to editingData so it can be accessed in the modal also opens modal
   const getData = (e) => {
     const parent = e.target.parentNode;
     const grandParent = parent.parentNode;
@@ -37,21 +39,26 @@ const HomePage = () => {
       attendee_id: rowID,
     };
     const editData = {
-    firstName: (tableData[grandParent.id].firstName),
-    lastName: (tableData[grandParent.id].lastName),
-    email: (tableData[grandParent.id].email),
-    age: (tableData[grandParent.id].age),
-    }
+      //to access the data in the row from the button, i had to access grandparent.id to get the row number, then access the tableData and get the data
+      firstName: tableData[grandParent.id].firstName,
+      lastName: tableData[grandParent.id].lastName,
+      email: tableData[grandParent.id].email,
+      age: tableData[grandParent.id].age,
+    };
     setEditingData(editData);
+    //sets the row id to selectedID so it can be used to update the row
     setSelectedID(data);
     handleShow();
   };
+  //modal open/close functions
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  //function to update data in the database and in the table
   const updateData = (e) => {
     e.preventDefault();
+    //i set new info as new data to be sent to the database
     const data = {
       username: userData,
       attendee_id: selectedID.attendee_id,
@@ -61,10 +68,9 @@ const HomePage = () => {
       age: e.target[3].value,
     };
 
-    
-
     axios.post("http://localhost:3001/updateData", data).then((res) => {
       if (res.data.success) {
+        //after getting success from the database, i close the modal and update the table
         handleClose();
         axios.post("http://localhost:3001/getData", data).then((res) => {
           setTableData(res.data.rows);
@@ -76,16 +82,18 @@ const HomePage = () => {
   };
 
   const deleteData = (e) => {
+    //once again, i had to access the row id from the button
     const parent = e.target.parentNode;
     const grandParent = parent.parentNode;
     const rowID = tableData[grandParent.id].attendee_id;
-
+    // i set the username to distinguish which user is deleting the data and the attendee_id to delete the correct row
     const data = {
       username: userData,
       attendee_id: rowID,
     };
     axios.post("http://localhost:3001/deleteData", data).then((res) => {
       if (res.data.success) {
+        // and again, after receiving success from the database, i update the table
         handleClose();
         axios.post("http://localhost:3001/getData", data).then((res) => {
           setTableData(res.data.rows);
@@ -93,7 +101,7 @@ const HomePage = () => {
       }
     });
   };
-
+  //loading screen is set to true while the data is being fetched from the database and set to false when the data is received (sort of like a loading screen)
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
@@ -101,8 +109,40 @@ const HomePage = () => {
     }, 3000);
   }, []);
 
+  //useffect to check if user is idle for 5 minutes and if so, log them out.
+  useEffect(() => {
+    let timer;
+    const handleLogout = () => {
+      setLoggedIn(false);
+      setTableData([]);
+      setValidated(false);
+      setUserData([]);
+      alert("You have been logged out due to inactivity");
+      localStorage.clear();
+    };
+    const resetTimer = () => {
+      clearTimeout(timer);
+      timer = setTimeout(handleLogout, 300000);
+    };
+    window.addEventListener("mousemove", resetTimer);
+    window.addEventListener("mousedown", resetTimer);
+    window.addEventListener("keypress", resetTimer);
+    window.addEventListener("scroll", resetTimer);
+    window.addEventListener("touchmove", resetTimer);
+    resetTimer();
+    return () => {
+      window.removeEventListener("mousemove", resetTimer);
+      window.removeEventListener("mousedown", resetTimer);
+      window.removeEventListener("keypress", resetTimer);
+      window.removeEventListener("scroll", resetTimer);
+      window.removeEventListener("touchmove", resetTimer);
+    };
+  }, [setLoggedIn, setUserData, setTableData, setValidated]);
+
   return (
     <>
+      {/* is is loading? if yes, then show loading screen if not, show my home page
+    also was getting a lot of 'key' errors, to i gave everyone keys (was feeling generous) */}
       {loading ? (
         <PacmanLoader size={40} color={"#211d22"} />
       ) : (
@@ -111,7 +151,7 @@ const HomePage = () => {
             Logout
           </YellowButton>
           <AddUserForm key={"AddUserForm"} />
-          <AttendeeTable key={"AttendeeTable"}>
+          <AttendeeTable key={userData}>
             <thead>
               <tr key={"first_row"} id="table_first_row">
                 <th key={"thead_name"}>First Name</th>
@@ -121,7 +161,9 @@ const HomePage = () => {
               </tr>
               {tableData.length === 0 ? (
                 <tr key={"no_data"}>
-                  <td colSpan="4" styles={{textAlign: 'center'}}>No Data</td>
+                  <td colSpan="4" styles={{ textAlign: "center" }}>
+                    No Data
+                  </td>
                 </tr>
               ) : (
                 tableData.map((data, index) => (
@@ -191,8 +233,8 @@ const HomePage = () => {
                 <Form.Group key={"Update_name"} controlId="formUpdateFirstName">
                   <Form.Label>First name</Form.Label>
                   <Form.Control
-                  required
-                  className="form_control"
+                    required
+                    className="form_control"
                     autoComplete="off"
                     style={{
                       background: "#211d22",
@@ -207,8 +249,8 @@ const HomePage = () => {
                 <Form.Group controlId="formRegistrationLastName">
                   <Form.Label>Last name</Form.Label>
                   <Form.Control
-                  required
-                  className="form-control"
+                    required
+                    className="form-control"
                     autoComplete="off"
                     style={{
                       background: "#211d22",
@@ -224,8 +266,8 @@ const HomePage = () => {
                 <Form.Group controlId="formRegistrationEmail">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
-                  required
-                  className="form-control"
+                    required
+                    className="form-control"
                     autoComplete="off"
                     style={{
                       background: "#211d22",
@@ -241,8 +283,8 @@ const HomePage = () => {
                 <Form.Group controlId="formRegistrationAge">
                   <Form.Label>Age</Form.Label>
                   <Form.Control
-                  required
-                  className="form-control"
+                    required
+                    className="form-control"
                     autoComplete="off"
                     style={{
                       background: "#211d22",
