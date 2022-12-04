@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { UserContext } from "../UserContext";
+import { useIdleTimer } from "react-idle-timer";
 import React, { useContext, useEffect, useState } from "react";
 import { Table, Container, Button, Modal, Form } from "react-bootstrap";
 import { AddUserForm } from "../components/AddUserForm";
@@ -29,6 +30,7 @@ const HomePage = () => {
     setTableData([]);
     setValidated(false);
     setUserData([]);
+    alert("You have been logged out");
   };
   // gets data from row that is clicked on, and sets it to editingData so it can be accessed in the modal also opens modal
   const getData = (e) => {
@@ -109,35 +111,11 @@ const HomePage = () => {
     }, 3000);
   }, []);
 
-  //useffect to check if user is idle for 5 minutes and if so, log them out.
-  useEffect(() => {
-    let timer;
-    const handleLogout = () => {
-      setLoggedIn(false);
-      setTableData([]);
-      setValidated(false);
-      setUserData([]);
-      alert("You have been logged out due to inactivity");
-      localStorage.clear();
-    };
-    const resetTimer = () => {
-      clearTimeout(timer);
-      timer = setTimeout(handleLogout, 300000);
-    };
-    window.addEventListener("mousemove", resetTimer);
-    window.addEventListener("mousedown", resetTimer);
-    window.addEventListener("keypress", resetTimer);
-    window.addEventListener("scroll", resetTimer);
-    window.addEventListener("touchmove", resetTimer);
-    resetTimer();
-    return () => {
-      window.removeEventListener("mousemove", resetTimer);
-      window.removeEventListener("mousedown", resetTimer);
-      window.removeEventListener("keypress", resetTimer);
-      window.removeEventListener("scroll", resetTimer);
-      window.removeEventListener("touchmove", resetTimer);
-    };
-  }, [setLoggedIn, setUserData, setTableData, setValidated]);
+  //check if user is idle for 5 minutes and if so, log them out using idle timer
+  const { getRemainingTime, getLastActiveTime } = useIdleTimer({
+    timeout: 1000 * 5,
+    onIdle: () => logout(),
+  });
 
   return (
     <>
