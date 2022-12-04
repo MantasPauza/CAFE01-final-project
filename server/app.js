@@ -29,7 +29,7 @@ db.run(
 );
 // check if demo user admin has table if not, create one
 db.run(
-  `CREATE TABLE IF NOT EXISTS admin (attendee_id INTEGER PRIMARY KEY, firstName TEXT NOT NULL, email TEXT NOT NULL, lastName TEXT NOT NULL, age INTEGER NOT NULL);`
+  `CREATE TABLE IF NOT EXISTS admin (attendee_id INTEGER PRIMARY KEY, firstName TEXT NOT NULL, lastName TEXT NOT NULL, email TEXT NOT NULL, age INTEGER NOT NULL);`
 );
 
 // check if username is already taken and return true or false
@@ -77,7 +77,6 @@ app.post("/addUser", (req, res) => {
 // receive data from front-end and updating user's data table with given values using given id to identify which row.
 app.post("/updateData", (req, res) => {
   const { username, attendee_id, firstName, lastName, email, age } = req.body;
-  console.log(req.body);
   db.run(
     `UPDATE ${username} SET firstName = ?, lastName = ?, email = ?, age = ? WHERE attendee_id = ?`,
     [firstName, lastName, email, age, attendee_id],
@@ -153,7 +152,6 @@ app.post("/validatePassword", (req, res) => {
 // receive data from front-end and adding it to user's data table
 app.post("/getData", (req, res) => {
   const { username } = req.body;
-  console.log(username);
 
   db.all(
     `
@@ -173,7 +171,6 @@ app.post("/getData", (req, res) => {
 // receive data from front-end and adding that data to user's table
 app.post("/addAttendee", (req, res) => {
   const { username, id, firstName, lastName, email, age } = req.body;
-  console.log(username);
   db.run(
     `INSERT INTO ${username} (attendee_id, firstName, lastName, email, age) VALUES ( ${id}, '${firstName}', '${lastName}', '${email}', '${age}')`,
     (err) => {

@@ -154,7 +154,7 @@ function Login() {
             </Modal.Header>
             <Modal.Body style={{ background: "#211d22", color: "#fde0a6" }}>
               <Form onSubmit={register} className="register-form">
-                <h5>Register</h5>
+                <h5>Create new user</h5>
                 <Form.Group controlId="formRegistrationUsername">
                   <Form.Label>Username</Form.Label>
                   <Form.Control

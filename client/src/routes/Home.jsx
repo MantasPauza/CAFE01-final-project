@@ -21,6 +21,7 @@ const HomePage = () => {
   const [editedData, setEditedData] = useState([]);
   const [selectedID, setSelectedID] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [editingData, setEditingData] = useState({});
 
   const logout = () => {
     setLoggedIn(false);
@@ -35,6 +36,13 @@ const HomePage = () => {
     const data = {
       attendee_id: rowID,
     };
+    const editData = {
+    firstName: (tableData[grandParent.id].firstName),
+    lastName: (tableData[grandParent.id].lastName),
+    email: (tableData[grandParent.id].email),
+    age: (tableData[grandParent.id].age),
+    }
+    setEditingData(editData);
     setSelectedID(data);
     handleShow();
   };
@@ -52,6 +60,8 @@ const HomePage = () => {
       email: e.target[2].value,
       age: e.target[3].value,
     };
+
+    
 
     axios.post("http://localhost:3001/updateData", data).then((res) => {
       if (res.data.success) {
@@ -88,13 +98,13 @@ const HomePage = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 4000);
+    }, 3000);
   }, []);
 
   return (
     <>
       {loading ? (
-        <PacmanLoader size={40} color={"#fde0a6"} />
+        <PacmanLoader size={40} color={"#211d22"} />
       ) : (
         <HomeContainer id="home_container">
           <YellowButton key={"LogOutButton"} variant="primary" onClick={logout}>
@@ -111,7 +121,7 @@ const HomePage = () => {
               </tr>
               {tableData.length === 0 ? (
                 <tr key={"no_data"}>
-                  <td colSpan="4">No Data</td>
+                  <td colSpan="4" styles={{textAlign: 'center'}}>No Data</td>
                 </tr>
               ) : (
                 tableData.map((data, index) => (
@@ -173,14 +183,16 @@ const HomePage = () => {
               style={{ background: "#211d22", color: "#fde0a6" }}
               closeButton
             >
-              <Modal.Title>Modal heading</Modal.Title>
+              <Modal.Title>Update form</Modal.Title>
             </Modal.Header>
             <Modal.Body style={{ background: "#211d22", color: "#fde0a6" }}>
               <Form onSubmit={updateData} className="attendee_update_form">
-                <h5>Register</h5>
+                <h5>Update user</h5>
                 <Form.Group key={"Update_name"} controlId="formUpdateFirstName">
                   <Form.Label>First name</Form.Label>
                   <Form.Control
+                  required
+                  className="form_control"
                     autoComplete="off"
                     style={{
                       background: "#211d22",
@@ -189,11 +201,14 @@ const HomePage = () => {
                     }}
                     type="text"
                     placeholder="Enter first name"
+                    defaultValue={editingData.firstName}
                   />
                 </Form.Group>
                 <Form.Group controlId="formRegistrationLastName">
                   <Form.Label>Last name</Form.Label>
                   <Form.Control
+                  required
+                  className="form-control"
                     autoComplete="off"
                     style={{
                       background: "#211d22",
@@ -203,11 +218,14 @@ const HomePage = () => {
                     key={"Update_lastName"}
                     type="text"
                     placeholder="Enter last name"
+                    defaultValue={editingData.lastName}
                   />
                 </Form.Group>
                 <Form.Group controlId="formRegistrationEmail">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
+                  required
+                  className="form-control"
                     autoComplete="off"
                     style={{
                       background: "#211d22",
@@ -217,11 +235,14 @@ const HomePage = () => {
                     key={"Update_email"}
                     type="Email"
                     placeholder="Enter email"
+                    defaultValue={editingData.email}
                   />
                 </Form.Group>
                 <Form.Group controlId="formRegistrationAge">
                   <Form.Label>Age</Form.Label>
                   <Form.Control
+                  required
+                  className="form-control"
                     autoComplete="off"
                     style={{
                       background: "#211d22",
@@ -231,11 +252,12 @@ const HomePage = () => {
                     key={"Update_age"}
                     type="number"
                     placeholder="Enter age"
+                    defaultValue={editingData.age}
                   />
                 </Form.Group>
-                <Button variant="success" type="submit">
+                <YellowButton variant="success" type="submit">
                   Submit
-                </Button>
+                </YellowButton>
               </Form>
             </Modal.Body>
           </Modal>
