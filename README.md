@@ -1,7 +1,13 @@
 # CAFE01-final-project
 My final project for CodeAcademy front-end curriculum.
 
-To start server type cd/server into terminal and then npm start
+To start server: 
+
+cd client
+npm install
+cd ../server
+npm install
+npm start
 
 What i used:  <br>
 React for front-end interfaces. <br>
