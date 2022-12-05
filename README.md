@@ -1,6 +1,8 @@
 # CAFE01-final-project
 My final project for CodeAcademy front-end curriculum.
 
+To start server type cd/server into terminal and then npm start
+
 What i used:  <br>
 React for front-end interfaces. <br>
 SqLite3 for storing data. <br>
