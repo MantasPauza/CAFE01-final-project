@@ -113,7 +113,7 @@ const HomePage = () => {
 
   //check if user is idle for 5 minutes and if so, log them out using idle timer
   const { getRemainingTime, getLastActiveTime } = useIdleTimer({
-    timeout: 1000 * 5,
+    timeout: 1000 * 5 * 60,
     onIdle: () => logout(),
   });
 
